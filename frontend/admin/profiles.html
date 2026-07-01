@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <script defer src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+
+    <title>Kelola Profile</title>
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>Admin Portfolio</h2>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profiles.index') }}">Profiles</a>
+        <a href="{{ url_for('skills.index') }}">Skills</a>
+        <a href="{{ url_for('experiences.index') }}">Experiences</a>
+        <a href="{{ url_for('projects.index') }}">Projects</a>
+        <a href="{{ url_for('contacts.index') }}">Contacts</a>
+        <a href="{{ url_for('login.logout') }}">Logout</a>
+    </aside>
+
+    <main class="content">
+        <h1>Kelola Profile</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+        <div class="box">
+            <h2>Tambah Profile</h2>
+            <form method="POST" action="{{ url_for('profiles.create') }}" enctype="multipart/form-data">
+                <input type="text" name="name" placeholder="Nama" required>
+                <input type="text" name="title" placeholder="Title">
+                <textarea name="description" placeholder="Deskripsi"></textarea>
+                <input type="email" name="email" placeholder="Email">
+                <input type="text" name="phone" placeholder="Nomor HP">
+                <input type="text" name="address" placeholder="Alamat">
+                <input type="file" name="photo" accept="image/*">
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
+
+        {% for item in profiles %}
+        <div class="box">
+            <h2>{{ item.name }}</h2>
+            {% if item.photo_url %}
+                <img src="{{ item.photo_url }}" class="preview-img" alt="Foto profile">
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('profiles.update', id=item.id) }}" enctype="multipart/form-data">
+                <input type="text" name="name" value="{{ item.name }}" required>
+                <input type="text" name="title" value="{{ item.title or '' }}">
+                <textarea name="description">{{ item.description or '' }}</textarea>
+                <input type="email" name="email" value="{{ item.email or '' }}">
+                <input type="text" name="phone" value="{{ item.phone or '' }}">
+                <input type="text" name="address" value="{{ item.address or '' }}">
+                <input type="file" name="photo" accept="image/*">
+                <button type="submit">Update</button>
+            </form>
+
+            <form method="POST" action="{{ url_for('profiles.delete', id=item.id) }}" data-confirm="Hapus profile ini?">
+                <button class="danger" type="submit">Hapus</button>
+            </form>
+        </div>
+        {% endfor %}
+    </main>
+</div>
+</body>
+</html>

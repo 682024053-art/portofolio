@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <script defer src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+
+    <title>Pesan Kontak</title>
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>Admin Portfolio</h2>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profiles.index') }}">Profiles</a>
+        <a href="{{ url_for('skills.index') }}">Skills</a>
+        <a href="{{ url_for('experiences.index') }}">Experiences</a>
+        <a href="{{ url_for('projects.index') }}">Projects</a>
+        <a href="{{ url_for('contacts.index') }}">Contacts</a>
+        <a href="{{ url_for('login.logout') }}">Logout</a>
+    </aside>
+
+    <main class="content">
+        <h1>Pesan Kontak</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+        {% for contact in contacts %}
+        <div class="box">
+            <h2>{{ contact.subject or 'Tanpa Subject' }}</h2>
+            <p><b>Nama:</b> {{ contact.name }}</p>
+            <p><b>Email:</b> {{ contact.email }}</p>
+            <p><b>Pesan:</b> {{ contact.message }}</p>
+            <p><small>{{ contact.created_at }}</small></p>
+
+            <form method="POST" action="{{ url_for('contacts.delete', id=contact.id) }}" data-confirm="Hapus pesan ini?">
+                <button class="danger" type="submit">Hapus</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="box">
+            <p>Belum ada pesan masuk.</p>
+        </div>
+        {% endfor %}
+    </main>
+</div>
+</body>
+</html>

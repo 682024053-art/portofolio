@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <script defer src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+
+    <title>Kelola Experience</title>
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>Admin Portfolio</h2>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profiles.index') }}">Profiles</a>
+        <a href="{{ url_for('skills.index') }}">Skills</a>
+        <a href="{{ url_for('experiences.index') }}">Experiences</a>
+        <a href="{{ url_for('projects.index') }}">Projects</a>
+        <a href="{{ url_for('contacts.index') }}">Contacts</a>
+        <a href="{{ url_for('login.logout') }}">Logout</a>
+    </aside>
+
+    <main class="content">
+        <h1>Kelola Experience</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+        <div class="box">
+            <h2>Tambah Experience</h2>
+            <form method="POST" action="{{ url_for('experiences.create') }}">
+                <input type="text" name="position" placeholder="Posisi" required>
+                <input type="text" name="company" placeholder="Instansi/Perusahaan" required>
+                <input type="text" name="start_date" placeholder="Mulai">
+                <input type="text" name="end_date" placeholder="Selesai">
+                <textarea name="description" placeholder="Deskripsi"></textarea>
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
+
+        {% for exp in experiences %}
+        <div class="box">
+            <form method="POST" action="{{ url_for('experiences.update', id=exp.id) }}">
+                <input type="text" name="position" value="{{ exp.position }}" required>
+                <input type="text" name="company" value="{{ exp.company }}" required>
+                <input type="text" name="start_date" value="{{ exp.start_date or '' }}">
+                <input type="text" name="end_date" value="{{ exp.end_date or '' }}">
+                <textarea name="description">{{ exp.description or '' }}</textarea>
+                <button type="submit">Update</button>
+            </form>
+
+            <form method="POST" action="{{ url_for('experiences.delete', id=exp.id) }}" data-confirm="Hapus experience ini?">
+                <button class="danger" type="submit">Hapus</button>
+            </form>
+        </div>
+        {% endfor %}
+    </main>
+</div>
+</body>
+</html>

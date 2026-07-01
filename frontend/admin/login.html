@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <script defer src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+
+    <title>Login Admin - Portfolio</title>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Login Admin</h1>
+            <p>Masuk untuk mengelola data portfolio.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login.login') }}">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="admin@gmail.com" required>
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="admin123" required>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <a href="{{ url_for('utama.index') }}">Kembali ke Portfolio</a>
+        </div>
+    </div>
+</body>
+</html>

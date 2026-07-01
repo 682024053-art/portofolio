@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/css/admin.css') }}">
+    <script defer src="{{ url_for('static', filename='admin/js/admin.js') }}"></script>
+
+    <title>Kelola Skill</title>
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>Admin Portfolio</h2>
+        <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profiles.index') }}">Profiles</a>
+        <a href="{{ url_for('skills.index') }}">Skills</a>
+        <a href="{{ url_for('experiences.index') }}">Experiences</a>
+        <a href="{{ url_for('projects.index') }}">Projects</a>
+        <a href="{{ url_for('contacts.index') }}">Contacts</a>
+        <a href="{{ url_for('login.logout') }}">Logout</a>
+    </aside>
+
+    <main class="content">
+        <h1>Kelola Skill</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+        <div class="box">
+            <h2>Tambah Skill</h2>
+            <form method="POST" action="{{ url_for('skills.create') }}">
+                <input type="text" name="name" placeholder="Nama skill" required>
+                <input type="number" name="level" placeholder="Level 0-100" min="0" max="100">
+                <input type="text" name="icon" placeholder="Contoh: fa-brands fa-python">
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
+
+        {% for skill in skills %}
+        <div class="box compact-box">
+            <form method="POST" action="{{ url_for('skills.update', id=skill.id) }}">
+                <input type="text" name="name" value="{{ skill.name }}" required>
+                <input type="number" name="level" value="{{ skill.level }}" min="0" max="100">
+                <input type="text" name="icon" value="{{ skill.icon or '' }}">
+                <button type="submit">Update</button>
+            </form>
+
+            <form method="POST" action="{{ url_for('skills.delete', id=skill.id) }}" data-confirm="Hapus skill ini?">
+                <button class="danger" type="submit">Hapus</button>
+            </form>
+        </div>
+        {% endfor %}
+    </main>
+</div>
+</body>
+</html>
